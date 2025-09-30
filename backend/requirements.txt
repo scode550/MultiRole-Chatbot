@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+torch
+transformers
+sentence-transformers
+chromadb
+pypdf
+PyMuPDF
+optimum[onnxruntime]
+accelerate
