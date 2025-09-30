@@ -1,0 +1,35 @@
+# /docker-compose.yml
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app # Mounts local code for live-reloading
+      - chroma_data:/app/chroma_db # Persists the vector database
+      - documents_data:/app/documents # Persists uploaded documents
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    image: python:3.11-slim
+    working_dir: /app
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app # Mounts the entire project directory
+    command: >
+      sh -c "pip install -r frontend_requirements.txt && streamlit run app.py --server.port 8501 --server.address 0.0.0.0"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+volumes:
+  chroma_data:
+  documents_data:
